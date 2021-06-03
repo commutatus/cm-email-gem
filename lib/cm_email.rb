@@ -12,10 +12,6 @@ module Cm_email
       @configuration ||= Configuration.new
     end
 
-    def reset
-      @configuration = Configuration.new
-    end
-
     def configure
       yield(configuration)
     end
@@ -45,16 +41,12 @@ module Cm_email
     # Creates a segment (with atleast one existing contact).
     # expected format for 'contact_emails' is Array[JSON].
     def create_segment(name, contact_emails, note = '')
-      segment_contacts = []
-      contact_emails.each do |contact_email|
-        segment_contacts << {contact_email: contact_email}
-      end
       request_body = {
         api_key: identification,
         name: name,
         note: note,
         segment: {
-          segment_contacts: segment_contacts
+          segment_contacts: contact_emails
         }
       }
       create_response = request_cm_email('/api/segments', request_body)
@@ -82,10 +74,10 @@ module Cm_email
 
     def request_cm_email(path, request_body, method = 'post')
       #conditional statement below is temporary and will be changed to prod url later.
-      if Rails.env == 'development' || Rails.env == 'staging'
-        domain_url = 'https://staging.cm-email.commutatus.com/'
+      domain_url = if Rails.env.production?
+        'https://cm-email.commutatus.com/'
       else
-        domain_url = 'https://cm-email.commutatus.com/'
+        'https://staging.cm-email.commutatus.com/'
       end
       uri = URI.parse(domain_url + path)
       header = {'Content-Type': 'application/json'}
