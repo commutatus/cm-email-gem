@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["PRATIK DHARAMDASANI"]
   spec.email         = ["pratik@commutatus.com"]
 
-  spec.summary       = "cm_email gem is written for rails."
+  spec.summary       = "cm_email gem facilitates sending emails using Cm-email's API."
   spec.description   = "This gem is a wrapper for Cm-email's API"
   spec.homepage      = 'https://github.com/commutatus/cm-email-gem'
   spec.license       = "MIT"

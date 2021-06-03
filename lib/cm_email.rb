@@ -20,9 +20,10 @@ module Cm_email
       yield(configuration)
     end
 
+    # Either finds and updates, or creates a contact (with status subscribed).
     def create_contact(first_name, email, last_name = '', date_of_birth = '', country = '')
       request_body = {
-        api_key: configuration.api_key,
+        api_key: identification,
         first_name: first_name,
         email: email,
         last_name: last_name,
@@ -32,22 +33,24 @@ module Cm_email
       create_response = request_cm_email('/api/contacts', request_body)
     end
 
+    # Finds the contact and unsubscribes it from every segment.
     def unsubscribe_contact(contact_email)
       request_body = {
-        api_key: configuration.api_key,
+        api_key: identification,
         contact_email: contact_email
       }
       create_response = request_cm_email('/api/contacts/unsubscribe', request_body)
     end
 
+    # Creates a segment (with atleast one existing contact).
+    # expected format for 'contact_emails' is Array[JSON].
     def create_segment(name, contact_emails, note = '')
-      segment = {}
       segment_contacts = []
       contact_emails.each do |contact_email|
         segment_contacts << {contact_email: contact_email}
       end
       request_body = {
-        api_key: configuration.api_key,
+        api_key: identification,
         name: name,
         note: note,
         segment: {
@@ -57,18 +60,20 @@ module Cm_email
       create_response = request_cm_email('/api/segments', request_body)
     end
 
+    # Removes contact from the segment.
     def remove_segment_contact(contact_email, segment_name)
       request_body = {
-        api_key: configuration.api_key,
+        api_key: identification,
         contact_email: contact_email,
         segment_name: segment_name
       }
       create_response = request_cm_email('/api/segments/segment_contacts/remove', request_body, 'delete')
     end
 
+    # Adds a contact to a segment.
     def add_segment_contact(contact_email, segment_name)
       request_body = {
-        api_key: configuration.api_key,
+        api_key: identification,
         contact_email: contact_email,
         segment: segment_name
       }
@@ -92,6 +97,10 @@ module Cm_email
       # Send the request
       response = http.request(request)
       return JSON.parse(response.body)
+    end
+
+    def identification
+      return configuration.api_key
     end
 
   end
