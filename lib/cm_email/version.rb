@@ -1,0 +1,3 @@
+module CmEmail
+  VERSION = "0.1.0"
+end
