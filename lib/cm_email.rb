@@ -19,7 +19,6 @@ module Cm_email
     # Either finds and updates, or creates a contact (with status subscribed).
     def create_contact(first_name, email, last_name = '', date_of_birth = '', country = '')
       request_body = {
-        api_key: identification,
         first_name: first_name,
         email: email,
         last_name: last_name,
@@ -32,7 +31,6 @@ module Cm_email
     # Finds the contact and unsubscribes it from every segment.
     def unsubscribe_contact(contact_email)
       request_body = {
-        api_key: identification,
         contact_email: contact_email
       }
       create_response = request_cm_email('/api/contacts/unsubscribe', request_body)
@@ -42,7 +40,6 @@ module Cm_email
     # expected format for 'contact_emails' is Array[JSON].
     def create_segment(name, contact_emails, note = '')
       request_body = {
-        api_key: identification,
         name: name,
         note: note,
         segment: {
@@ -55,7 +52,6 @@ module Cm_email
     # Removes contact from the segment.
     def remove_segment_contact(contact_email, segment_name)
       request_body = {
-        api_key: identification,
         contact_email: contact_email,
         segment_name: segment_name
       }
@@ -65,7 +61,6 @@ module Cm_email
     # Adds a contact to a segment.
     def add_segment_contact(contact_email, segment_name)
       request_body = {
-        api_key: identification,
         contact_email: contact_email,
         segment: segment_name
       }
@@ -73,17 +68,16 @@ module Cm_email
     end
 
     def request_cm_email(path, request_body, method = 'post')
-      #conditional statement below is temporary and will be changed to prod url later.
-      domain_url = if Rails.env.production?
-        'https://cm-email.commutatus.com/'
-      else
+      domain_url = if api_mode.eql?('staging')
         'https://staging.cm-email.commutatus.com/'
+      else
+        'https://cm-email.commutatus.com/'
       end
       uri = URI.parse(domain_url + path)
-      header = {'Content-Type': 'application/json'}
+      headers = {'Content-Type': 'application/json', 'api_key': api_key}
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
-      request = method == 'delete'? Net::HTTP::Delete.new(uri.request_uri, header) : Net::HTTP::Post.new(uri.request_uri, header)
+      request = method == 'delete'? Net::HTTP::Delete.new(uri.request_uri, headers) : Net::HTTP::Post.new(uri.request_uri, headers)
       puts request_body.to_json
       request.body = request_body.to_json
       # Send the request
@@ -91,8 +85,12 @@ module Cm_email
       return JSON.parse(response.body)
     end
 
-    def identification
+    def api_key
       return configuration.api_key
+    end
+
+    def api_mode
+      return configuration.api_mode
     end
 
   end
