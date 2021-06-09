@@ -74,7 +74,7 @@ module Cm_email
         'https://cm-email.commutatus.com/'
       end
       uri = URI.parse(domain_url + path)
-      headers = {'Content-Type': 'application/json', 'api_key': api_key}
+      headers = {'Content-Type': 'application/json', 'Api-Key': api_key}
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       request = method == 'delete'? Net::HTTP::Delete.new(uri.request_uri, headers) : Net::HTTP::Post.new(uri.request_uri, headers)
