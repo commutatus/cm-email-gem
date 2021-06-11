@@ -49,6 +49,15 @@ module Cm_email
       create_response = request_cm_email('/api/segments', request_body)
     end
 
+    def update_segment(existing_name, new_name, note = '')
+      request_body = {
+        existing_name: existing_name,
+        new_name: new_name,
+        note: note
+      }
+      create_response = request_cm_email('/api/segments/update', request_body)
+    end
+
     # Removes contact from the segment.
     def remove_segment_contact(contact_email, segment_name)
       request_body = {
