@@ -6,7 +6,7 @@ To install the gem in your application:
 ```
 Create a configuration file like `config/initializers/cm_email.rb`, paste the following and replace the credentials.
 ```
-Cm_email.configure do |config|
+CmEmail.configure do |config|
   config.api_key = "xxxxxxxxxxxxxx"
 end
 ```

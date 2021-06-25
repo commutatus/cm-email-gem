@@ -1,7 +1,7 @@
 require "cm_email/version"
 require 'cm_email/configuration'
 
-module Cm_email
+module CmEmail
   class << self
     attr_accessor :configuration
     require 'net/http'
