@@ -49,11 +49,12 @@ module CmEmail
       create_response = request_cm_email('/api/segments', request_body)
     end
 
-    def update_segment(existing_name, new_name, note = '')
+    def update_segment(new_name, note = '', segment_id = '', existing_name = '')
       request_body = {
-        existing_name: existing_name,
         new_name: new_name,
-        note: note
+        note: note,
+        segment_id: segment_id,
+        existing_name: existing_name,
       }
       create_response = request_cm_email('/api/segments/update', request_body)
     end
