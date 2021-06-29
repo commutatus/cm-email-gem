@@ -1,7 +1,7 @@
 require "cm_email/version"
 require 'cm_email/configuration'
 
-module Cm_email
+module CmEmail
   class << self
     attr_accessor :configuration
     require 'net/http'
@@ -49,29 +49,30 @@ module Cm_email
       create_response = request_cm_email('/api/segments', request_body)
     end
 
-    def update_segment(existing_name, new_name, note = '')
+    def update_segment(new_name, note = '', segment_id = '', existing_name = '')
       request_body = {
-        existing_name: existing_name,
         new_name: new_name,
-        note: note
+        note: note,
+        segment_id: segment_id,
+        existing_name: existing_name,
       }
       create_response = request_cm_email('/api/segments/update', request_body)
     end
 
     # Removes contact from the segment.
-    def remove_segment_contact(contact_email, segment_name)
+    def remove_segment_contact(contact_email, segment_id)
       request_body = {
         contact_email: contact_email,
-        segment_name: segment_name
+        segment_id: segment_id
       }
       create_response = request_cm_email('/api/segments/segment_contacts/remove', request_body, 'delete')
     end
 
     # Adds a contact to a segment.
-    def add_segment_contact(contact_email, segment_name)
+    def add_segment_contact(contact_email, segment_id)
       request_body = {
         contact_email: contact_email,
-        segment: segment_name
+        segment_id: segment_id
       }
       create_response = request_cm_email('/api/segments/segment_contacts/add', request_body)
     end
